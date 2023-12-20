@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "523792087313",
+    "project_id": "electroreadcare-2beea",
+    "storage_bucket": "electroreadcare-2beea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523792087313:android:15eb55e507c32ca023b4b0",
+        "android_client_info": {
+          "package_name": "com.electroreadcare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7P7QIifSic9GcMoCdkXNfSB_3EafXrvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
