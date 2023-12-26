@@ -138,7 +138,7 @@ const Signup = props => {
           </View>
         </View>
         {/* Error Message Below  */}
-        <Text style={{alignSelf: 'center'}}>{message}</Text>
+        <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text>
 
         <View style={styles.btnContainer}>
           <Btn
