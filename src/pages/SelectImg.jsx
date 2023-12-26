@@ -1,12 +1,17 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from 'react-native';
 import React, {useState} from 'react';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
 
 const SelectImg = ({navigation, route}) => {
   const {value, MeterInput} = route.params;
-  const [imgUrl, setImgUrl] = useState(
-    'https://cdn-icons-png.flaticon.com/512/8619/8619059.png',
-  );
+  const [imgUrl, setImgUrl] = useState('');
 
   const openCamera = async () => {
     const result = await launchCamera();
@@ -27,7 +32,11 @@ const SelectImg = ({navigation, route}) => {
           <Image
             resizeMode="contain"
             style={styles.img}
-            source={{uri: imgUrl}}
+            source={{
+              uri: imgUrl
+                ? imgUrl
+                : 'https://cdn-icons-png.flaticon.com/512/8619/8619059.png',
+            }}
           />
           <View style={{marginTop: 0, marginBottom: 25, alignItems: 'center'}}>
             <Text style={styles.imgText}>Take a clear image of your Meter</Text>
@@ -40,10 +49,12 @@ const SelectImg = ({navigation, route}) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Result', {value, imgUrl, MeterInput});
+            imgUrl.length === 0
+              ? Alert.alert('Please take a photo of your meter')
+              : navigation.navigate('Result', {value, imgUrl, MeterInput});
           }}
           style={styles.galleryButton}>
-          <Text style={{color: '#f5ce0c', fontWeight: 'bold', fontSize: 20}}>
+          <Text style={{color: '#f7a602', fontWeight: 'bold', fontSize: 20}}>
             Submit
           </Text>
         </TouchableOpacity>
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
   outContainer: {
     height: 800,
     width: 385,
-    backgroundColor: '#f5ce0c',
+    backgroundColor: '#f7ae02',
     marginTop: 50,
     borderRadius: 40,
     alignItems: 'center',

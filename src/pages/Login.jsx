@@ -1,9 +1,36 @@
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+import React, {useState} from 'react';
 import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
+import auth from '@react-native-firebase/auth';
 
 const Login = props => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const isUserCreated = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+      console.log(isUserCreated);
+    } catch (err) {
+      console.log(err);
+
+      setMessage(err.message);
+    }
+  };
+
+  console.log(email);
   return (
     <View style={styles.container}>
       <View style={{alignItems: 'center', marginBottom: 30}}>
@@ -23,40 +50,91 @@ const Login = props => {
       <View style={{alignItems: 'center'}}>
         <Text style={styles.headerText}>Welcome Back!</Text>
       </View>
+
+      {/* Email */}
       <View style={styles.InputContainer}>
         <View style={{marginBottom: 10}}>
-          <Text style={styles.h2Text}>Username</Text>
-          <FieldInput placeholder="username" imgFile="user.png" />
-        </View>
-        <View>
-          <Text style={styles.h2Text}>Password</Text>
-          <FieldInput placeholder="password" imgFile="user.png" />
-        </View>
-        <View style={styles.btnContainer}>
-          <Btn
-            bgColor="#f5ce0c"
-            textColor="#030303"
-            btnLabel="Log In"
-            press={() => {
-              props.navigation.navigate('Home');
-            }}
-          />
-          <View style={{marginTop: 10, flexDirection: 'row'}}>
-            <Text style={styles.footerText}>New User ? </Text>
-            <TouchableOpacity
-              onPress={() => {
-                props.navigation.navigate('Signup');
-              }}>
-              <Text style={styles.footerText}>SignUp</Text>
-            </TouchableOpacity>
+          <Text style={styles.h2Text}>Email</Text>
+          <View style={styles.sectionStyle}>
+            <Image
+              style={{height: 20, width: 20, marginLeft: 10}}
+              source={require(`../assets/mail-inbox.png`)}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Your Email"
+              value={email}
+              onChangeText={value => setEmail(value)}
+            />
           </View>
+        </View>
+      </View>
+
+      {/* Password */}
+      <View style={styles.InputContainer}>
+        <View style={{marginBottom: 10}}>
+          <Text style={styles.h2Text}>Password</Text>
+          <View style={styles.sectionStyle}>
+            <Image
+              style={{height: 20, width: 20, marginLeft: 10}}
+              source={require(`../assets/reset-password.png`)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Your Password"
+              value={password}
+              onChangeText={value => setPassword(value)}
+              secureTextEntry={true}
+            />
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.btnContainer}>
+        {/* Login Btn */}
+        <Btn
+          bgColor="#f5ce0c"
+          textColor="#030303"
+          btnLabel="Log In"
+          press={() => {
+            handleLogin();
+            props.navigation.navigate('Home');
+          }}
+        />
+        <View style={{marginTop: 10, flexDirection: 'row'}}>
+          <Text style={styles.footerText}>New User ? </Text>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate('Signup');
+            }}>
+            <Text style={styles.footerText}>SignUp</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 };
 
+{
+  /* CSS */
+}
 const styles = StyleSheet.create({
+  input: {
+    paddingLeft: 20,
+    backgroundColor: '#fff',
+    color: '#424242',
+  },
+  sectionStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#f0d50c',
+    borderRadius: 50,
+    height: 50,
+    margin: 10,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     marginTop: 70,

@@ -33,7 +33,7 @@ const ResultScreen = ({route, navigation}) => {
         </Text>
         <Btn
           bgColor="#222"
-          textColor="#f5ce0c"
+          textColor="#f7ae02"
           btnLabel="Confirm"
           customWidth={350}
           press={() => {
@@ -61,14 +61,14 @@ const styles = StyleSheet.create({
   },
   readingContainer: {
     marginTop: 30,
-    backgroundColor: '#f5ce0c',
+    backgroundColor: '#f7ae02',
     borderRadius: 20,
     alignItems: 'center',
     padding: 20,
   },
   imgContainer: {
     marginTop: 20,
-    backgroundColor: '#f5ce0c',
+    backgroundColor: '#f7ae02',
     borderRadius: 20,
     alignItems: 'center',
     padding: 20,

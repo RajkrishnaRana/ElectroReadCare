@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
+import Btn from '../components/Btn';
 // import {TextInput} from 'react-native-gesture-handler';
 // import {useNavigation} from '@react-navigation/native';
 
@@ -36,10 +37,10 @@ const HomeScreen = props => {
           source={require('../assets/Electro-Service-Logo-N.webp')}
         />
         <View style={styles.logoText}>
-          <Text style={{fontWeight: 'bold', fontSize: 25, color: '#d65231'}}>
+          <Text style={{fontWeight: 'bold', fontSize: 20, color: '#d65231'}}>
             Select Your Meter &
           </Text>
-          <Text style={{fontWeight: 'bold', fontSize: 25, color: '#f5ce0c'}}>
+          <Text style={{fontWeight: 'bold', fontSize: 20, color: '#f7ae02'}}>
             Enter Your Meter Reading
           </Text>
         </View>
@@ -78,15 +79,15 @@ const HomeScreen = props => {
           style={{
             backgroundColor: '#0F3460',
             padding: 20,
-            borderRadius: 15,
+            borderRadius: 50,
             alignItems: 'center',
             borderWidth: 3,
             borderColor: 'yellow',
           }}
           onPress={() => {
-            // Use navigation.navigate to go to another screen
-            // Alert.alert(` ${value} \nMeter Reading is: ${MeterInput}`);
-            props.navigation.navigate('SelectImg', {value, MeterInput});
+            MeterInput.length === 6
+              ? props.navigation.navigate('SelectImg', {value, MeterInput})
+              : Alert.alert('Please Enter a valid Meter Input of 6 digit');
           }}>
           <Text
             style={{
@@ -98,6 +99,17 @@ const HomeScreen = props => {
             Submit
           </Text>
         </TouchableOpacity>
+      </View>
+      <View style={styles.historyContainer}>
+        <Btn
+          bgColor="#0F3460"
+          textColor="#fff"
+          btnLabel="HISTORY"
+          customWidth={300}
+          press={() => {
+            props.navigation.navigate('History');
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -113,10 +125,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dropdownAround: {
-    backgroundColor: '#fece2f',
+    backgroundColor: '#f7ae02',
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 50,
     marginTop: '10%',
+  },
+  historyContainer: {
+    alignItems: 'center',
+    marginTop: 40,
   },
   input: {
     height: 50,
@@ -165,8 +181,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   imgContainer: {
-    width: 170,
-    height: 170,
+    width: 100,
+    height: 100,
   },
   logoText: {
     marginTop: 30,

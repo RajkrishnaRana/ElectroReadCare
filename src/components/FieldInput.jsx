@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, TextInput, Image} from 'react-native';
 import React, {useState} from 'react';
 
-const FieldInput = ({placeholder, keyboard}) => {
+const FieldInput = ({placeholder, keyboard, customValue}) => {
   return (
     <View style={styles.sectionStyle}>
       <Image
@@ -12,6 +12,7 @@ const FieldInput = ({placeholder, keyboard}) => {
         style={styles.input}
         placeholder={placeholder}
         keyboardType={keyboard}
+        value={customValue}
       />
     </View>
   );
