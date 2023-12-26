@@ -10,19 +10,29 @@ import React, {useState} from 'react';
 import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 
-const Login = props => {
+export default function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  // For Navigation
+  const navigation = useNavigation();
+
   const handleLogin = async () => {
     try {
-      const isUserCreated = await auth().createUserWithEmailAndPassword(
+      const isUserLogin = await auth().signInWithEmailAndPassword(
         email,
         password,
       );
-      console.log(isUserCreated);
+      setMessage('');
+      console.log(isUserLogin);
+
+      navigation.navigate('Home', {
+        email: isUserLogin.user.email,
+        uid: isUserLogin.user.uid,
+      });
     } catch (err) {
       console.log(err);
 
@@ -30,7 +40,6 @@ const Login = props => {
     }
   };
 
-  console.log(email);
   return (
     <View style={styles.container}>
       <View style={{alignItems: 'center', marginBottom: 30}}>
@@ -91,6 +100,9 @@ const Login = props => {
         </View>
       </View>
 
+      {/* Error Message Below  */}
+      <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text>
+
       <View style={styles.btnContainer}>
         {/* Login Btn */}
         <Btn
@@ -99,7 +111,6 @@ const Login = props => {
           btnLabel="Log In"
           press={() => {
             handleLogin();
-            props.navigation.navigate('Home');
           }}
         />
         <View style={{marginTop: 10, flexDirection: 'row'}}>
@@ -114,7 +125,7 @@ const Login = props => {
       </View>
     </View>
   );
-};
+}
 
 {
   /* CSS */
@@ -174,5 +185,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default Login;
