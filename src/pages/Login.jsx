@@ -5,12 +5,14 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
-import FieldInput from '../components/FieldInput';
+// import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, StackActions} from '@react-navigation/native';
+import {color} from 'react-native-reanimated';
 
 export default function Login(props) {
   const [email, setEmail] = useState('');
@@ -22,17 +24,22 @@ export default function Login(props) {
 
   const handleLogin = async () => {
     try {
-      const isUserLogin = await auth().signInWithEmailAndPassword(
-        email,
-        password,
-      );
-      setMessage('');
-      console.log(isUserLogin);
+      if (email.length > 0 && password.length > 0) {
+        const user = await auth().signInWithEmailAndPassword(email, password);
 
-      navigation.navigate('Home', {
-        email: isUserLogin.user.email,
-        uid: isUserLogin.user.uid,
-      });
+        console.log(user);
+        // replacing LoginScreen navigator postion with Home. So back btn won't take you to login screen again after Sign in.
+        if (user.user.emailVerified) {
+          Alert.alert('You are Verified');
+          navigation.dispatch(StackActions.replace('Home'));
+        } else {
+          Alert.alert('Please Verify Your Email Checkout Inbox');
+          await auth().currentUser.sendEmailVerification();
+          await auth().signOut();
+        }
+      } else {
+        Alert.alert('Please Enter All Details');
+      }
     } catch (err) {
       console.log(err);
 
@@ -119,7 +126,7 @@ export default function Login(props) {
             onPress={() => {
               props.navigation.navigate('Signup');
             }}>
-            <Text style={styles.footerText}>SignUp</Text>
+            <Text style={[styles.footerText, {color: '#000'}]}>SignUp</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -8,11 +8,14 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState} from 'react';
-import FieldInput from '../components/FieldInput';
+// import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 
 const Signup = props => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -47,12 +50,16 @@ const Signup = props => {
           email,
           password,
         );
-        console.log(isUserCreated);
+
+        await auth().currentUser.sendEmailVerification();
+        await auth().signOut();
+        Alert.alert('Please Check Your Email and Verify');
+        // console.log(isUserCreated);
+        navigation.navigate('Login');
       } catch (err) {
         console.log(err);
         setMessage(err.message);
       }
-      props.navigation.navigate('Login');
     }
   };
 
