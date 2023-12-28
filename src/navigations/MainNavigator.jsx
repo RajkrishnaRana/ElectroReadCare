@@ -12,41 +12,16 @@ import SelectImg from '../pages/SelectImg';
 import ResultScreen from '../pages/ResultScreen';
 import HistoryScreen from '../pages/HistoryScreen';
 import OfflinePages from '../pages/OfflinePages';
-// import HistoryScreen from '../pages/HistoryScreen';
-// import {createDrawerNavigator} from '@react-navigation/drawer';
-// import Icon from 'react-native-vector-icons/Entypo';
-
-// const navigation = useNavigation();
-
-// const DrawerNav = () => {
-//   const Drawer = createDrawerNavigator();
-//   return (
-//     <Drawer.Navigator
-//       screenOptions={{
-//         headerLeft: () => {
-//           return (
-//             <Icon
-//               name="menu"
-//               size={30}
-//               color="#000"
-//               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-//             />
-//           );
-//         },
-//       }}>
-//       <Drawer.Screen name="Home1" component={HomeScreen} />
-//       <Drawer.Screen name="History" component={HistoryScreen} />
-//     </Drawer.Navigator>
-//   );
-// };
+import SplashScreen from '../pages/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 const StackNav = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Result" component={ResultScreen} />
-      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SelectImg" component={SelectImg} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="History" component={HistoryScreen} />
@@ -64,3 +39,13 @@ function MainNavigator() {
 }
 
 export default MainNavigator;
+
+// const DrawerNav = () => {
+//   const Drawer = createDrawerNavigator();
+//   return (
+//     <Drawer.Navigator screenOptions={{headerShown: false}}>
+//       <Drawer.Screen name="Home" component={HomeScreen} />
+//       <Drawer.Screen name="History" component={HistoryScreen} />
+//     </Drawer.Navigator>
+//   );
+// };

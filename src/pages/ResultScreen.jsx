@@ -70,7 +70,7 @@ const ResultScreen = ({route}) => {
           customWidth={350}
           press={() => {
             handleClick();
-            //navigation.dispatch(StackActions.replace('Home'));
+            navigation.dispatch(StackActions.replace('Home'));
           }}
         />
       </View>
