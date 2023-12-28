@@ -5,24 +5,43 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
-import FieldInput from '../components/FieldInput';
+// import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
+import {useNavigation, StackActions} from '@react-navigation/native';
+import {color} from 'react-native-reanimated';
 
-const Login = props => {
+export default function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [showpass, setShowpass] = useState(true);
+  // const[showpassimg,setShowpassimg]=useState()
+
+  // For Navigation
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     try {
-      const isUserCreated = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
-      );
-      console.log(isUserCreated);
+      if (email.length > 0 && password.length > 0) {
+        const user = await auth().signInWithEmailAndPassword(email, password);
+
+        console.log(user);
+        // replacing LoginScreen navigator postion with Home. So back btn won't take you to login screen again after Sign in.
+        if (user.user.emailVerified) {
+          Alert.alert('You are Verified');
+          navigation.dispatch(StackActions.replace('Home'));
+        } else {
+          Alert.alert('Please Verify Your Email Checkout Inbox');
+          await auth().currentUser.sendEmailVerification();
+          await auth().signOut();
+        }
+      } else {
+        Alert.alert('Please Enter All Details');
+      }
     } catch (err) {
       console.log(err);
 
@@ -30,7 +49,10 @@ const Login = props => {
     }
   };
 
-  console.log(email);
+  const showpassword = () => {
+    setShowpass(p => !p);
+  };
+
   return (
     <View style={styles.container}>
       <View style={{alignItems: 'center', marginBottom: 30}}>
@@ -85,11 +107,40 @@ const Login = props => {
               placeholder="Enter Your Password"
               value={password}
               onChangeText={value => setPassword(value)}
-              secureTextEntry={true}
+              secureTextEntry={showpass}
             />
+            {/* showpass img code */}
+            {showpass ? (
+              <TouchableOpacity onPress={showpassword}>
+                <Image
+                  style={{
+                    height: 20,
+                    width: 20,
+                    display: 'flex',
+                    position: 'relative',
+                  }}
+                  source={require(`../assets/showpass.png`)}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={showpassword}>
+                <Image
+                  style={{
+                    height: 20,
+                    width: 20,
+                    display: 'flex',
+                    position: 'relative',
+                  }}
+                  source={require(`../assets/hidepass.png`)}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
+
+      {/* Error Message Below  */}
+      <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text>
 
       <View style={styles.btnContainer}>
         {/* Login Btn */}
@@ -99,7 +150,6 @@ const Login = props => {
           btnLabel="Log In"
           press={() => {
             handleLogin();
-            props.navigation.navigate('Home');
           }}
         />
         <View style={{marginTop: 10, flexDirection: 'row'}}>
@@ -108,22 +158,24 @@ const Login = props => {
             onPress={() => {
               props.navigation.navigate('Signup');
             }}>
-            <Text style={styles.footerText}>SignUp</Text>
+            <Text style={[styles.footerText, {color: '#000'}]}>SignUp</Text>
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
-};
+}
 
 {
   /* CSS */
 }
 const styles = StyleSheet.create({
   input: {
+    width: '80%',
     paddingLeft: 20,
     backgroundColor: '#fff',
     color: '#424242',
+    paddingRight: 20,
   },
   sectionStyle: {
     flexDirection: 'row',
@@ -174,5 +226,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default Login;

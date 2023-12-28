@@ -1,7 +1,8 @@
 import React from 'react';
-// Navigator
 import MainNavigator from './src/navigations/MainNavigator';
 
-export default function App() {
+function App() {
   return <MainNavigator />;
 }
+
+export default App;

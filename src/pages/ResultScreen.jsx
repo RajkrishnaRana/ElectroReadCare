@@ -1,10 +1,42 @@
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Btn from '../components/Btn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StackActions, useNavigation} from '@react-navigation/native';
 
-const ResultScreen = ({route, navigation}) => {
+const ResultScreen = ({route}) => {
+  const navigation = useNavigation();
   const {value, imgUrl, MeterInput} = route.params;
-  const handleClick = () => {};
+  const [data, setData] = useState([]);
+
+  const findValue = async () => {
+    //Getting Data from async storage
+    const result = await AsyncStorage.getItem('value');
+    if (result !== null) setData(JSON.parse(result));
+  };
+
+  useEffect(() => {
+    //AsyncStorage.clear();
+    findValue();
+  }, []);
+
+  const handleClick = async () => {
+    const times = new Date();
+    const note = {
+      id: Date.now(),
+      time: times.toLocaleString(),
+      value: value,
+      imageUrl: imgUrl,
+      MeterReading: MeterInput,
+    };
+
+    //setting the old value with new value
+    const updatedValue = [...data, note];
+    setData(updatedValue);
+    console.log(updatedValue);
+    await AsyncStorage.setItem('value', JSON.stringify(updatedValue));
+    navigation.navigate('offline');
+  };
 
   return (
     <View style={styles.container}>
@@ -37,7 +69,8 @@ const ResultScreen = ({route, navigation}) => {
           btnLabel="Confirm"
           customWidth={350}
           press={() => {
-            navigation.navigate('Home');
+            handleClick();
+            navigation.dispatch(StackActions.replace('Home'));
           }}
         />
       </View>

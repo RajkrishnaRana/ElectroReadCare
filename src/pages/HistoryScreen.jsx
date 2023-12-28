@@ -11,7 +11,7 @@ const HistoryScreen = () => {
 
   const getDatabase = async () => {
     try {
-      const data = await firestore().collection('meterReading').doc('1').get();
+      const data = await firestore().collection('meterReading').doc('2').get();
       console.log(data);
       setMyData(data._data);
     } catch (err) {

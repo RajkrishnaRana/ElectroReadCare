@@ -11,9 +11,13 @@ import {
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import Btn from '../components/Btn';
-// import {TextInput} from 'react-native-gesture-handler';
-// import {useNavigation} from '@react-navigation/native';
+import Auth from '@react-native-firebase/auth';
+import {useNavigation, StackActions} from '@react-navigation/native';
 
+// import {useRoute} from '@react-navigation/native';
+// import {TextInput} from 'react-native-gesture-handler';
+
+// Meter Dropdown Data
 const data = [
   {label: 'Meter 1 [22123A]', value: '1'},
   {label: 'Meter 2 [22124B]', value: '2'},
@@ -25,6 +29,9 @@ const data = [
 ];
 
 const HomeScreen = props => {
+  // For Navigation
+  const navigation = useNavigation();
+
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const [MeterInput, setMeterInput] = useState('');
@@ -100,6 +107,8 @@ const HomeScreen = props => {
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* History Btn */}
       <View style={styles.historyContainer}>
         <Btn
           bgColor="#0F3460"
@@ -111,6 +120,29 @@ const HomeScreen = props => {
           }}
         />
       </View>
+
+      {/* LogOut Btn */}
+      <View style={styles.historyContainer}>
+        <Btn
+          bgColor="#de573c"
+          textColor="#fff"
+          btnLabel="Log Out"
+          customWidth={120}
+          press={async () => {
+            await Auth().signOut();
+
+            navigation.dispatch(StackActions.replace('Login'));
+            // navigation.navigate('Login');
+          }}
+        />
+      </View>
+
+      {/* Passing Email & Uid from Login page
+      <View style={{alignItems: 'center'}}>
+        <Text>**Dev Stage**</Text>
+        <Text>Email: {Auth().currentUser.email} </Text>
+        <Text>UID: {Auth().currentUser.uid} </Text>
+      </View> */}
     </SafeAreaView>
   );
 };
@@ -132,7 +164,7 @@ const styles = StyleSheet.create({
   },
   historyContainer: {
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 15,
   },
   input: {
     height: 50,
