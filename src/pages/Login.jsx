@@ -18,6 +18,8 @@ export default function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [showpass, setShowpass] = useState(true);
+  // const[showpassimg,setShowpassimg]=useState()
 
   // For Navigation
   const navigation = useNavigation();
@@ -45,6 +47,10 @@ export default function Login(props) {
 
       setMessage(err.message);
     }
+  };
+
+  const showpassword = () => {
+    setShowpass(p => !p);
   };
 
   return (
@@ -101,8 +107,34 @@ export default function Login(props) {
               placeholder="Enter Your Password"
               value={password}
               onChangeText={value => setPassword(value)}
-              secureTextEntry={true}
+              secureTextEntry={showpass}
             />
+            {/* showpass img code */}
+            {showpass ? (
+              <TouchableOpacity onPress={showpassword}>
+                <Image
+                  style={{
+                    height: 20,
+                    width: 20,
+                    display: 'flex',
+                    position: 'relative',
+                  }}
+                  source={require(`../assets/showpass.png`)}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={showpassword}>
+                <Image
+                  style={{
+                    height: 20,
+                    width: 20,
+                    display: 'flex',
+                    position: 'relative',
+                  }}
+                  source={require(`../assets/hidepass.png`)}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
@@ -139,9 +171,11 @@ export default function Login(props) {
 }
 const styles = StyleSheet.create({
   input: {
+    width: '80%',
     paddingLeft: 20,
     backgroundColor: '#fff',
     color: '#424242',
+    paddingRight: 20,
   },
   sectionStyle: {
     flexDirection: 'row',

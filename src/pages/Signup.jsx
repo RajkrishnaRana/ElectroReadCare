@@ -20,6 +20,8 @@ const Signup = props => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [showpass, setShowpass] = useState(true);
+  const [showconpass, setShowconpass] = useState(true);
 
   const validateEmail = email => {
     if (!email.includes('@')) {
@@ -61,6 +63,13 @@ const Signup = props => {
         setMessage(err.message);
       }
     }
+  };
+
+  const showpassword = () => {
+    setShowpass(prev => !prev);
+  };
+  const showconpassword = () => {
+    setShowconpass(prev => !prev);
   };
 
   return (
@@ -115,11 +124,37 @@ const Signup = props => {
                 {/* Password */}
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter Your Password"
+                  placeholder="Enter Your Password Again"
                   value={password}
                   onChangeText={value => setPassword(value)}
-                  secureTextEntry={true}
+                  secureTextEntry={showpass}
                 />
+                {/* show password icon */}
+                {showpass ? (
+                  <TouchableOpacity onPress={showpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/showpass.png`)}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={showpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/hidepass.png`)}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>
@@ -138,8 +173,34 @@ const Signup = props => {
                   placeholder="Enter Your Password Again"
                   value={confirmPassword}
                   onChangeText={value => setConfirmPassword(value)}
-                  secureTextEntry={true}
+                  secureTextEntry={showconpass}
                 />
+                {/* show password icon */}
+                {showconpass ? (
+                  <TouchableOpacity onPress={showconpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/showpass.png`)}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={showconpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/hidepass.png`)}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>
@@ -180,9 +241,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
+    width: '80%',
     paddingLeft: 20,
     backgroundColor: '#fff',
     color: '#424242',
+    paddingRight: 20,
   },
   sectionStyle: {
     flexDirection: 'row',
