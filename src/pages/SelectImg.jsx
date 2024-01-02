@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {launchCamera} from 'react-native-image-picker';
+import Toast from 'react-native-toast-message';
 
 const SelectImg = ({navigation, route}) => {
   const {value, MeterInput} = route.params;
@@ -26,7 +27,7 @@ const SelectImg = ({navigation, route}) => {
           <Text style={{fontSize: 18, color: '#000', fontWeight: 'bold'}}>
             Upload Your Electricity Meter Reading
           </Text>
-          <Text></Text>
+          <Toast ref={ref => Toast.setRef(ref)} />
         </View>
         <View style={styles.btnContainer}>
           <Image
@@ -50,7 +51,14 @@ const SelectImg = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             imgUrl.length === 0
-              ? Alert.alert('Please take a photo of your meter')
+              ? Toast.show({
+                  type: 'error',
+                  text1: '!  Alert',
+                  text2: 'Take a photo and try again',
+                  autoHide: true,
+                  position: 'top',
+                  topOffset: 0,
+                })
               : navigation.navigate('Result', {value, imgUrl, MeterInput});
           }}
           style={styles.galleryButton}>

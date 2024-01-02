@@ -18,7 +18,7 @@ const ResultScreen = ({route}) => {
   useEffect(() => {
     //AsyncStorage.clear();
     findValue();
-  }, []);
+  });
 
   const handleClick = async () => {
     const times = new Date();

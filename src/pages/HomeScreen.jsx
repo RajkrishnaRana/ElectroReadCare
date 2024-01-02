@@ -39,12 +39,12 @@ const HomeScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Toast ref={ref => Toast.setRef(ref)} />
       <View style={{alignItems: 'center', marginBottom: 30}}>
         <Image
           style={styles.imgContainer}
           source={require('../assets/Electro-Service-Logo-N.webp')}
         />
+        <Toast ref={ref => Toast.setRef(ref)} />
         <View style={styles.logoText}>
           <Text style={{fontWeight: 'bold', fontSize: 20, color: '#d65231'}}>
             Select Your Meter &
@@ -98,10 +98,12 @@ const HomeScreen = props => {
               ? props.navigation.navigate('SelectImg', {value, MeterInput})
               : //  Alert.alert('Please Enter a valid Meter Input of 6 digit');
                 Toast.show({
-                  type: "error",
+                  type: 'error',
                   text1: '!  Alert',
                   text2: 'Please Enter a valid Meter Input of 6 digit',
                   autoHide: true,
+                  position: 'top',
+                  topOffset: 0,
                 });
           }}>
           <Text

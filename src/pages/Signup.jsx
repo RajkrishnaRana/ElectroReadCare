@@ -82,6 +82,8 @@ const Signup = props => {
         text1: '!  Alert',
         text2: 'Please enter all details',
         autoHide: true,
+        position: 'top',
+        topOffset: 0,
       });
     } else if (!isEmailValid) {
       Toast.show({
@@ -89,6 +91,8 @@ const Signup = props => {
         text1: '!  Failed',
         text2: 'Enter valied email id',
         autoHide: true,
+        position: 'top',
+        topOffset: 0,
       });
     }
     //Password check
@@ -98,6 +102,8 @@ const Signup = props => {
         text1: '!  Failed',
         text2: 'Please enter 6 character then try again ',
         autoHide: true,
+        position: 'top',
+        topOffset: 0,
       });
     } else if (password !== confirmPassword) {
       Toast.show({
@@ -105,6 +111,8 @@ const Signup = props => {
         text1: '!  Failed',
         text2: 'Password are not same',
         autoHide: true,
+        position: 'top',
+        topOffset: 0,
       });
     }
 
@@ -127,6 +135,8 @@ const Signup = props => {
           text1: 'Successfull',
           text2: 'Please Check Your Email and Verify',
           autoHide: true,
+          position: 'top',
+          topOffset: 0,
         });
 
         //erease all data

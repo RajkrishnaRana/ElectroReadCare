@@ -38,6 +38,8 @@ export default function Login(props) {
             text1: 'Success',
             text2: 'You are successfully Login',
             autoHide: true,
+            position: 'top',
+          topOffset: 0,
           });
           navigation.dispatch(StackActions.replace('Home'));
         } else {
@@ -47,6 +49,8 @@ export default function Login(props) {
             text1: '!  Failed',
             text2: 'Please Verify Your Email Checkout Inbox',
             autoHide: true,
+            position: 'top',
+          topOffset: 0,
           });
           await auth().currentUser.sendEmailVerification();
           await auth().signOut();
@@ -57,6 +61,8 @@ export default function Login(props) {
           type: 'error',
           text1: '!  Alert',
           text2: 'Please enter all details',
+          position: 'top',
+          topOffset: 0,
           autoHide: true,
         });
       }
@@ -67,6 +73,8 @@ export default function Login(props) {
         text1: '!  Failed',
         text2: 'invalied',
         autoHide: true,
+        position: 'top',
+        topOffset: 0,
       });
 
       setMessage(err.message);
@@ -80,12 +88,12 @@ export default function Login(props) {
   return (
     <View style={styles.container}>
       <Toast ref={ref => Toast.setRef(ref)} />
-
       <View style={{alignItems: 'center', marginBottom: 30}}>
         <Image
           style={styles.imgContainer}
           source={require('../assets/Electro-Service-Logo-N.webp')}
         />
+
         <View style={styles.logoText}>
           <Text style={{fontWeight: 'bold', fontSize: 17, color: '#d65231'}}>
             Electro{' '}
