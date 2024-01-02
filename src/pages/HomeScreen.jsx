@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import {Dropdown} from 'react-native-element-dropdown';
 import Btn from '../components/Btn';
 import Auth from '@react-native-firebase/auth';
@@ -38,6 +39,7 @@ const HomeScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Toast ref={ref => Toast.setRef(ref)} />
       <View style={{alignItems: 'center', marginBottom: 30}}>
         <Image
           style={styles.imgContainer}
@@ -94,7 +96,13 @@ const HomeScreen = props => {
           onPress={() => {
             MeterInput.length === 6
               ? props.navigation.navigate('SelectImg', {value, MeterInput})
-              : Alert.alert('Please Enter a valid Meter Input of 6 digit');
+              : //  Alert.alert('Please Enter a valid Meter Input of 6 digit');
+                Toast.show({
+                  type: "error",
+                  text1: '!  Alert',
+                  text2: 'Please Enter a valid Meter Input of 6 digit',
+                  autoHide: true,
+                });
           }}>
           <Text
             style={{

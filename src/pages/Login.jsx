@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
 // import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
@@ -32,18 +33,41 @@ export default function Login(props) {
         console.log(user);
         // replacing LoginScreen navigator postion with Home. So back btn won't take you to login screen again after Sign in.
         if (user.user.emailVerified) {
-          Alert.alert('You are Verified');
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'You are successfully Login',
+            autoHide: true,
+          });
           navigation.dispatch(StackActions.replace('Home'));
         } else {
-          Alert.alert('Please Verify Your Email Checkout Inbox');
+          // Alert.alert('Please Verify Your Email Checkout Inbox');
+          Toast.show({
+            type: 'error',
+            text1: '!  Failed',
+            text2: 'Please Verify Your Email Checkout Inbox',
+            autoHide: true,
+          });
           await auth().currentUser.sendEmailVerification();
           await auth().signOut();
         }
       } else {
-        Alert.alert('Please Enter All Details');
+        // Alert.alert('Please Enter All Details');
+        Toast.show({
+          type: 'error',
+          text1: '!  Alert',
+          text2: 'Please enter all details',
+          autoHide: true,
+        });
       }
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'invalied',
+        autoHide: true,
+      });
 
       setMessage(err.message);
     }
@@ -55,6 +79,8 @@ export default function Login(props) {
 
   return (
     <View style={styles.container}>
+      <Toast ref={ref => Toast.setRef(ref)} />
+
       <View style={{alignItems: 'center', marginBottom: 30}}>
         <Image
           style={styles.imgContainer}
@@ -140,7 +166,7 @@ export default function Login(props) {
       </View>
 
       {/* Error Message Below  */}
-      <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text>
+      {/* <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text> */}
 
       <View style={styles.btnContainer}>
         {/* Login Btn */}

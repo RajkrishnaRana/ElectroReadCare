@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
 // import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
@@ -25,7 +26,6 @@ const Signup = props => {
 
   const validateEmail = email => {
     if (!email.includes('@')) {
-      Alert.alert('Please Provide a valid email');
       return false;
     } else {
       return true;
@@ -34,7 +34,6 @@ const Signup = props => {
 
   const validatePass = (password, confirmPassword) => {
     if (password !== confirmPassword) {
-      Alert.alert('Please give same password');
       return false;
     } else if (password === confirmPassword) {
       return true;
@@ -42,28 +41,28 @@ const Signup = props => {
   };
 
   // SignUp Function
-  const handleSignup = async () => {
-    const isEmailValid = validateEmail(email);
-    const isPassValid = validatePass(password, confirmPassword);
+  // const handleSignup = async () => {
+  // const isEmailValid = validateEmail(email);
+  // const isPassValid = validatePass(password, confirmPassword);
 
-    if (isEmailValid && isPassValid) {
-      try {
-        const isUserCreated = await auth().createUserWithEmailAndPassword(
-          email,
-          password,
-        );
+  // if (isEmailValid && isPassValid) {
+  //   try {
+  //     const isUserCreated = await auth().createUserWithEmailAndPassword(
+  //       email,
+  //       password,
+  //     );
 
-        await auth().currentUser.sendEmailVerification();
-        await auth().signOut();
-        Alert.alert('Please Check Your Email and Verify');
-        // console.log(isUserCreated);
-        navigation.navigate('Login');
-      } catch (err) {
-        console.log(err);
-        setMessage(err.message);
-      }
-    }
-  };
+  //     await auth().currentUser.sendEmailVerification();
+  //     await auth().signOut();
+  //     // Alert.alert('Please Check Your Email and Verify');
+  //     // console.log(isUserCreated);
+  //     navigation.navigate('Login');
+  //   } catch (err) {
+  //     console.log(err);
+  //     setMessage(err.message);
+  //   }
+  // }
+  // };
 
   const showpassword = () => {
     setShowpass(prev => !prev);
@@ -72,8 +71,75 @@ const Signup = props => {
     setShowconpass(prev => !prev);
   };
 
+  //Signup conditation check
+  const signuphandel = async () => {
+    const isEmailValid = validateEmail(email);
+    const isPassValid = validatePass(password, confirmPassword);
+    //Email check
+    if (password === '' && confirmPassword === '' && email === '') {
+      Toast.show({
+        type: 'error',
+        text1: '!  Alert',
+        text2: 'Please enter all details',
+        autoHide: true,
+      });
+    } else if (!isEmailValid) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Enter valied email id',
+        autoHide: true,
+      });
+    }
+    //Password check
+    else if (password.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Please enter 6 character then try again ',
+        autoHide: true,
+      });
+    } else if (password !== confirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Password are not same',
+        autoHide: true,
+      });
+    }
+
+    //Firebase Enter
+    //When Password are same then Enter Firebase
+    else if (isEmailValid && isPassValid) {
+      try {
+        const isUserCreated = await auth().createUserWithEmailAndPassword(
+          email,
+          password,
+        );
+
+        await auth().currentUser.sendEmailVerification();
+        await auth().signOut();
+        // Alert.alert('Please Check Your Email and Verify');
+        console.log(isUserCreated);
+        // navigation.navigate('Login');
+        Toast.show({
+          type: 'success',
+          text1: 'Successfull',
+          text2: 'Please Check Your Email and Verify',
+          autoHide: true,
+        });
+
+        //erease all data
+      } catch (err) {
+        console.log(err);
+        setMessage(err.message);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <Toast ref={ref => Toast.setRef(ref)} />
       <View style={{marginBottom: 30, alignSelf: 'center'}}>
         <Image
           style={styles.imgContainer}
@@ -213,13 +279,9 @@ const Signup = props => {
             bgColor="#030303"
             textColor="#FFF"
             btnLabel="Sign Up"
-            press={() => {
-              // SignUp Function
-              password.length >= 6
-                ? handleSignup()
-                : Alert.alert('Password Must be at least 6 char');
-            }}
+            press={signuphandel}
           />
+
           <View style={{flexDirection: 'row', marginTop: 10}}>
             <Text style={{fontSize: 17}}>Existing User ? </Text>
             <TouchableOpacity

@@ -18,13 +18,14 @@ const Stack = createNativeStackNavigator();
 const StackNav = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Result" component={ResultScreen} />
       <Stack.Screen name="SelectImg" component={SelectImg} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="History" component={HistoryScreen} />
+      <Stack.Screen name="SplashScreen" component={SplashScreen} />
+
       <Stack.Screen name="offline" component={OfflinePages} />
     </Stack.Navigator>
   );
@@ -48,4 +49,5 @@ export default MainNavigator;
 //       <Drawer.Screen name="History" component={HistoryScreen} />
 //     </Drawer.Navigator>
 //   );
+
 // };
