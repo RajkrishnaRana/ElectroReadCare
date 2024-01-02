@@ -6,19 +6,20 @@ import {StackActions, useNavigation} from '@react-navigation/native';
 
 const ResultScreen = ({route}) => {
   const navigation = useNavigation();
-  const {value, imgUrl, MeterInput} = route.params;
+  const {value, imgUrl, setImgUrl, MeterInput} = route.params;
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    //AsyncStorage.clear();
+    setImgUrl('');
+    findValue();
+  }, []);
 
   const findValue = async () => {
     //Getting Data from async storage
     const result = await AsyncStorage.getItem('value');
     if (result !== null) setData(JSON.parse(result));
   };
-
-  useEffect(() => {
-    //AsyncStorage.clear();
-    findValue();
-  });
 
   const handleClick = async () => {
     const times = new Date();
@@ -31,7 +32,7 @@ const ResultScreen = ({route}) => {
     };
 
     //setting the old value with new value
-    const updatedValue = [...data, note];
+    const updatedValue = [note, ...data];
     setData(updatedValue);
     console.log(updatedValue);
     await AsyncStorage.setItem('value', JSON.stringify(updatedValue));

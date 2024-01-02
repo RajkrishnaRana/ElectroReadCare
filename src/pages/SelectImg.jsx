@@ -20,6 +20,11 @@ const SelectImg = ({navigation, route}) => {
     console.log('Result ========>', result);
   };
 
+  const handelsubmit = () => {
+    navigation.navigate('Result', {value, imgUrl,setImgUrl, MeterInput});
+    // setImgUrl('');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.outContainer}>
@@ -59,7 +64,7 @@ const SelectImg = ({navigation, route}) => {
                   position: 'top',
                   topOffset: 0,
                 })
-              : navigation.navigate('Result', {value, imgUrl, MeterInput});
+              : handelsubmit();
           }}
           style={styles.galleryButton}>
           <Text style={{color: '#f7a602', fontWeight: 'bold', fontSize: 20}}>

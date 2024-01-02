@@ -13,6 +13,7 @@ import ResultScreen from '../pages/ResultScreen';
 import HistoryScreen from '../pages/HistoryScreen';
 import OfflinePages from '../pages/OfflinePages';
 import SplashScreen from '../pages/SplashScreen';
+import DetailsPage from '../pages/DetailsPage';
 
 const Stack = createNativeStackNavigator();
 const StackNav = () => {
@@ -27,6 +28,7 @@ const StackNav = () => {
       <Stack.Screen name="History" component={HistoryScreen} />
 
       <Stack.Screen name="offline" component={OfflinePages} />
+      <Stack.Screen name="Details" component={DetailsPage} />
     </Stack.Navigator>
   );
 };
