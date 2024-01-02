@@ -3,6 +3,8 @@ import React, {useEffect, useState} from 'react';
 import Btn from '../components/Btn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions, useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const ResultScreen = ({route}) => {
   const navigation = useNavigation();
@@ -20,7 +22,28 @@ const ResultScreen = ({route}) => {
     findValue();
   }, []);
 
-  const handleClick = async () => {
+  // When ONLINE ###########
+  const handleClickOnline = async () => {
+    // UPLOAD TO FIREBASE
+    const times = new Date();
+    const readingValue = {
+      id: auth().currentUser.uid,
+      time: times.toLocaleString(),
+      date: Date.now(),
+      MeterNumber: value,
+      imageUrl: imgUrl,
+      MeterReading: MeterInput,
+    };
+    await firestore()
+      .collection('MeterData')
+      .doc(auth().currentUser.uid)
+      .set(readingValue);
+    console.log(readingValue);
+  };
+
+  // When OFFLINE ############
+  const handleClickOffline = async () => {
+    // UPLOAD TO LOCAL STORAGE
     const times = new Date();
     const note = {
       id: Date.now(),
@@ -29,7 +52,6 @@ const ResultScreen = ({route}) => {
       imageUrl: imgUrl,
       MeterReading: MeterInput,
     };
-
     //setting the old value with new value
     const updatedValue = [...data, note];
     setData(updatedValue);
@@ -69,8 +91,8 @@ const ResultScreen = ({route}) => {
           btnLabel="Confirm"
           customWidth={350}
           press={() => {
-            handleClick();
-            navigation.dispatch(StackActions.replace('Home'));
+            handleClickOnline();
+            //navigation.dispatch(StackActions.replace('Home'));
           }}
         />
       </View>

@@ -11,7 +11,10 @@ const HistoryScreen = () => {
 
   const getDatabase = async () => {
     try {
-      const data = await firestore().collection('meterReading').doc('2').get();
+      const data = await firestore()
+        .collection('MeterData')
+        .doc('jmr9uOg6tMYUGooeuzs65wXkt7B3')
+        .get();
       console.log(data);
       setMyData(data._data);
     } catch (err) {
@@ -21,8 +24,8 @@ const HistoryScreen = () => {
 
   return (
     <View>
-      <Text> Name: {myData ? myData.reading : 'Loading...'} </Text>
-      <Text> Name: {myData ? myData.name : 'Loading...'} </Text>
+      <Text> Meter No.: {myData ? myData.MeterNumber : 'Loading...'} </Text>
+      <Text> Reading: {myData ? myData.MeterReading : 'Loading...'} </Text>
       {/* <Text> Name: {myData ? myData.age : 'Loading...'} </Text> */}
     </View>
   );
