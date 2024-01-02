@@ -9,16 +9,16 @@ const ResultScreen = ({route}) => {
   const {value, imgUrl, MeterInput} = route.params;
   const [data, setData] = useState([]);
 
+  useEffect(() => {
+    //AsyncStorage.clear();
+    findValue();
+  }, []);
+
   const findValue = async () => {
     //Getting Data from async storage
     const result = await AsyncStorage.getItem('value');
     if (result !== null) setData(JSON.parse(result));
   };
-
-  useEffect(() => {
-    //AsyncStorage.clear();
-    findValue();
-  }, []);
 
   const handleClick = async () => {
     const times = new Date();
@@ -31,7 +31,7 @@ const ResultScreen = ({route}) => {
     };
 
     //setting the old value with new value
-    const updatedValue = [...data, note];
+    const updatedValue = [note, ...data];
     setData(updatedValue);
     console.log(updatedValue);
     await AsyncStorage.setItem('value', JSON.stringify(updatedValue));
