@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import Btn from '../components/Btn';
 import NetInfo from '@react-native-community/netinfo';
+import firestore from '@react-native-firebase/firestore';
 
 const OfflinePages = ({}) => {
   const navigation = useNavigation();
@@ -20,6 +21,7 @@ const OfflinePages = ({}) => {
 
   useEffect(() => {
     storageData();
+    isOnline();
   }, [refreshing]);
 
   //Get Stored data
@@ -32,13 +34,25 @@ const OfflinePages = ({}) => {
     }
   };
 
+  const isOnline = () => {
+    netInfo.then(connectionInfo => {
+      if (connectionInfo.isConnected) {
+        Alert.alert('You are online');
+      } else {
+        Alert.alert('you are offline');
+      }
+    });
+  };
+
   const netInfo = NetInfo.fetch();
 
-  const upload = async () => {
-    await netInfo.then(connectionInfo => {
+  const upload = () => {
+    netInfo.then(connectionInfo => {
       if (connectionInfo.isConnected) {
-        //Firestore code needed
-        console.log('true');
+        data.map(async item => {
+          console.log(item);
+          await firestore().collection('MeterData').doc().set(item);
+        });
         AsyncStorage.clear();
         setData([]);
       } else {
@@ -51,7 +65,7 @@ const OfflinePages = ({}) => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 1000);
   };
 
   return (

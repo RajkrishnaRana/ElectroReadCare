@@ -51,7 +51,12 @@ const SelectImg = ({navigation, route}) => {
           onPress={() => {
             imgUrl.length === 0
               ? Alert.alert('Please take a photo of your meter')
-              : navigation.navigate('Result', {value, imgUrl, MeterInput});
+              : navigation.navigate('Result', {
+                  value,
+                  imgUrl,
+                  setImgUrl,
+                  MeterInput,
+                });
           }}
           style={styles.galleryButton}>
           <Text style={{color: '#f7a602', fontWeight: 'bold', fontSize: 20}}>

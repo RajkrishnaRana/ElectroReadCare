@@ -3,14 +3,18 @@ import React, {useEffect, useState} from 'react';
 import Btn from '../components/Btn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions, useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import NetInfo from '@react-native-community/netinfo';
 
 const ResultScreen = ({route}) => {
   const navigation = useNavigation();
-  const {value, imgUrl, MeterInput} = route.params;
+  const {value, imgUrl, MeterInput, setImgUrl} = route.params;
   const [data, setData] = useState([]);
 
   useEffect(() => {
     //AsyncStorage.clear();
+    setImgUrl('');
     findValue();
   }, []);
 
@@ -20,7 +24,25 @@ const ResultScreen = ({route}) => {
     if (result !== null) setData(JSON.parse(result));
   };
 
-  const handleClick = async () => {
+  // When ONLINE ###########
+  const handleClickOnline = async () => {
+    // UPLOAD TO FIREBASE
+    const times = new Date();
+    const readingValue = {
+      id: auth().currentUser.uid,
+      time: times.toLocaleString(),
+      date: Date.now(),
+      MeterNumber: value,
+      imageUrl: imgUrl,
+      MeterReading: MeterInput,
+    };
+    await firestore().collection('MeterData').doc().set(readingValue);
+    console.log(readingValue);
+  };
+
+  // When OFFLINE ############
+  const handleClickOffline = async () => {
+    // UPLOAD TO LOCAL STORAGE
     const times = new Date();
     const note = {
       id: Date.now(),
@@ -29,13 +51,24 @@ const ResultScreen = ({route}) => {
       imageUrl: imgUrl,
       MeterReading: MeterInput,
     };
-
     //setting the old value with new value
     const updatedValue = [note, ...data];
     setData(updatedValue);
     console.log(updatedValue);
     await AsyncStorage.setItem('value', JSON.stringify(updatedValue));
     navigation.navigate('offline');
+  };
+
+  const netInfo = NetInfo.fetch();
+
+  const offlineOrOnline = () => {
+    netInfo.then(connectionInfo => {
+      if (connectionInfo.isConnected) {
+        handleClickOnline();
+      } else {
+        handleClickOffline();
+      }
+    });
   };
 
   return (
@@ -69,7 +102,7 @@ const ResultScreen = ({route}) => {
           btnLabel="Confirm"
           customWidth={350}
           press={() => {
-            handleClick();
+            offlineOrOnline();
             navigation.dispatch(StackActions.replace('Home'));
           }}
         />
