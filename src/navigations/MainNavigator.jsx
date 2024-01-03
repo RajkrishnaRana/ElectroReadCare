@@ -26,6 +26,7 @@ const StackNav = () => {
       <Stack.Screen name="SelectImg" component={SelectImg} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="History" component={HistoryScreen} />
+
       <Stack.Screen name="offline" component={OfflinePages} />
       <Stack.Screen name="Details" component={DetailsPage} />
     </Stack.Navigator>
@@ -50,4 +51,5 @@ export default MainNavigator;
 //       <Drawer.Screen name="History" component={HistoryScreen} />
 //     </Drawer.Navigator>
 //   );
+
 // };

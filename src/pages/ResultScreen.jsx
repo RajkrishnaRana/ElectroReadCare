@@ -8,12 +8,14 @@ import firestore from '@react-native-firebase/firestore';
 import NetInfo from '@react-native-community/netinfo';
 
 const ResultScreen = ({route}) => {
+  var count = 1;
   const navigation = useNavigation();
   const {value, imgUrl, MeterInput, setImgUrl} = route.params;
   const [data, setData] = useState([]);
 
   useEffect(() => {
     //AsyncStorage.clear();
+    setImgUrl('');
     setImgUrl('');
     findValue();
   }, []);
@@ -27,6 +29,7 @@ const ResultScreen = ({route}) => {
   // When ONLINE ###########
   const handleClickOnline = async () => {
     // UPLOAD TO FIREBASE
+    count = count + 1;
     const times = new Date();
     const readingValue = {
       id: auth().currentUser.uid,
@@ -47,7 +50,7 @@ const ResultScreen = ({route}) => {
     const note = {
       id: Date.now(),
       time: times.toLocaleString(),
-      value: value,
+      MeterNumber: value,
       imageUrl: imgUrl,
       MeterReading: MeterInput,
     };

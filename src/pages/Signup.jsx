@@ -7,11 +7,11 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
 // import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 
 const Signup = props => {
@@ -21,12 +21,13 @@ const Signup = props => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [showpass, setShowpass] = useState(true);
+  const [showconpass, setShowconpass] = useState(true);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
   const validateEmail = email => {
     if (!email.includes('@')) {
-      Alert.alert('Please Provide a valid email');
       return false;
     } else {
       return true;
@@ -35,26 +36,73 @@ const Signup = props => {
 
   const validatePass = (password, confirmPassword) => {
     if (password !== confirmPassword) {
-      Alert.alert('Please give same password');
       return false;
     } else if (password === confirmPassword) {
       return true;
     }
   };
 
-  // SignUp Function
-  const handleSignup = async () => {
+  const showpassword = () => {
+    setShowpass(prev => !prev);
+  };
+  const showconpassword = () => {
+    setShowconpass(prev => !prev);
+  };
+
+  //Signup conditation check
+  const signuphandel = async () => {
     const isEmailValid = validateEmail(email);
     const isPassValid = validatePass(password, confirmPassword);
+    //Email check
+    if (password === '' && confirmPassword === '' && email === '') {
+      Toast.show({
+        type: 'error',
+        text1: '!  Alert',
+        text2: 'Please enter all details',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    } else if (!isEmailValid) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Enter valied email id',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    }
+    //Password check
+    else if (password.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Please enter 6 character then try again ',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    } else if (password !== confirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Password are not same',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    }
 
-    if (isEmailValid && isPassValid && name.length > 0 && phone.length === 10) {
+    //Firebase Enter
+    //When Password are same then Enter Firebase
+    else if (isEmailValid && isPassValid) {
       try {
-        const response = await auth().createUserWithEmailAndPassword(
+        const isUserCreated = await auth().createUserWithEmailAndPassword(
           email,
           password,
         );
 
-        //Put User Data with their uid
         const userData = {
           id: response.user.uid,
           name: name,
@@ -69,11 +117,17 @@ const Signup = props => {
 
         await auth().currentUser.sendEmailVerification();
         await auth().signOut();
-        Alert.alert('Please Check Your Email and Verify');
+        console.log(isUserCreated);
+        Toast.show({
+          type: 'success',
+          text1: 'Successfull',
+          text2: 'Please Check Your Email and Verify',
+          autoHide: true,
+          position: 'top',
+          topOffset: 0,
+        });
 
-        console.log(response);
-
-        navigation.navigate('Login');
+        //erease all data
       } catch (err) {
         console.log(err);
         setMessage(err.message);
@@ -83,7 +137,8 @@ const Signup = props => {
 
   return (
     <View style={styles.container}>
-      <View style={{alignSelf: 'center'}}>
+      <Toast ref={ref => Toast.setRef(ref)} />
+      <View style={{marginBottom: 10, alignSelf: 'center'}}>
         <Image
           style={styles.imgContainer}
           source={require('../assets/Electro-Service-Logo-N.webp')}
@@ -97,16 +152,15 @@ const Signup = props => {
           </Text>
         </View>
       </View>
-      <View style={{alignSelf: 'center'}}>
+      <View style={{alignSelf: 'center', marginBottom: 20}}>
         <Text style={styles.headerText}>Let's Get Started!</Text>
       </View>
-
       <View style={styles.InputContainer}>
-        <View style={{marginBottom: 5}}>
+        <View style={{marginBottom: 10}}>
           {/* Name of the User */}
           <View style={styles.InputContainer}>
-            <View style={{marginBottom: 5}}>
-              <Text style={styles.h2Text}>Name</Text>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Name</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
@@ -124,8 +178,8 @@ const Signup = props => {
 
           {/* Phone Number */}
           <View style={styles.InputContainer}>
-            <View style={{marginBottom: 5}}>
-              <Text style={styles.h2Text}>Phone Number</Text>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Phone Number</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
@@ -143,12 +197,12 @@ const Signup = props => {
 
           {/* Email */}
           <View style={styles.InputContainer}>
-            <View style={{marginBottom: 5}}>
-              <Text style={styles.h2Text}>Email</Text>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Email</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
-                  source={require('../assets/mail-inbox.png')}
+                  source={require(`../assets/mail-inbox.png`)}
                 />
                 <TextInput
                   style={styles.input}
@@ -162,28 +216,8 @@ const Signup = props => {
 
           {/* Password */}
           <View style={styles.InputContainer}>
-            <View style={{marginBottom: 5}}>
-              <Text style={styles.h2Text}>Password</Text>
-              <View style={styles.sectionStyle}>
-                <Image
-                  style={{height: 20, width: 20, marginLeft: 10}}
-                  source={require(`../assets/reset-password.png`)}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter Your Password"
-                  value={password}
-                  onChangeText={value => setPassword(value)}
-                  secureTextEntry={true}
-                />
-              </View>
-            </View>
-          </View>
-
-          {/* Confirm Password */}
-          <View style={styles.InputContainer}>
-            <View style={{marginBottom: 5}}>
-              <Text style={styles.h2Text}>Confirm Password</Text>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Password</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
@@ -192,31 +226,97 @@ const Signup = props => {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter Your Password Again"
+                  value={password}
+                  onChangeText={value => setPassword(value)}
+                  secureTextEntry={showpass}
+                />
+                {/* show password icon */}
+                {showpass ? (
+                  <TouchableOpacity onPress={showpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/showpass.png`)}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={showpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/hidepass.png`)}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.InputContainer}>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Confirm Password</Text> */}
+              <View style={styles.sectionStyle}>
+                <Image
+                  style={{height: 20, width: 20, marginLeft: 10}}
+                  source={require(`../assets/reset-password.png`)}
+                />
+                {/* Confirm Password */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Your Password Again"
                   value={confirmPassword}
                   onChangeText={value => setConfirmPassword(value)}
-                  secureTextEntry={true}
+                  secureTextEntry={showconpass}
                 />
+                {/* show password icon */}
+                {showconpass ? (
+                  <TouchableOpacity onPress={showconpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/showpass.png`)}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={showconpassword}>
+                    <Image
+                      style={{
+                        height: 20,
+                        width: 20,
+                        display: 'flex',
+                        position: 'relative',
+                      }}
+                      source={require(`../assets/hidepass.png`)}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>
         </View>
-
         {/* Error Message Below  */}
         <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text>
 
-        {/* Existing User */}
         <View style={styles.btnContainer}>
           <Btn
             bgColor="#030303"
             textColor="#FFF"
             btnLabel="Sign Up"
-            press={() => {
-              // SignUp Function
-              password.length >= 6
-                ? handleSignup()
-                : Alert.alert('Password Must be at least 6 char');
-            }}
+            press={signuphandel}
           />
+
           <View style={{flexDirection: 'row', marginTop: 10}}>
             <Text style={{fontSize: 17}}>Existing User ? </Text>
             <TouchableOpacity
@@ -236,11 +336,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    paddingTop: 25,
   },
   input: {
+    width: '80%',
     paddingLeft: 20,
     backgroundColor: '#fff',
     color: '#424242',
+    paddingRight: 20,
   },
   sectionStyle: {
     flexDirection: 'row',
@@ -271,6 +374,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     alignItems: 'center',
+    // pBottom: 10,
   },
   footerText: {
     fontWeight: 'bold',

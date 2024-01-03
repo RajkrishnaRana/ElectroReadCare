@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {launchCamera} from 'react-native-image-picker';
+import Toast from 'react-native-toast-message';
 
 const SelectImg = ({navigation, route}) => {
   const {value, MeterInput} = route.params;
@@ -19,6 +20,11 @@ const SelectImg = ({navigation, route}) => {
     console.log('Result ========>', result);
   };
 
+  const handelsubmit = () => {
+    navigation.navigate('Result', {value, imgUrl, setImgUrl, MeterInput});
+    // setImgUrl('');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.outContainer}>
@@ -26,7 +32,7 @@ const SelectImg = ({navigation, route}) => {
           <Text style={{fontSize: 18, color: '#000', fontWeight: 'bold'}}>
             Upload Your Electricity Meter Reading
           </Text>
-          <Text></Text>
+          <Toast ref={ref => Toast.setRef(ref)} />
         </View>
         <View style={styles.btnContainer}>
           <Image
@@ -50,13 +56,15 @@ const SelectImg = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             imgUrl.length === 0
-              ? Alert.alert('Please take a photo of your meter')
-              : navigation.navigate('Result', {
-                  value,
-                  imgUrl,
-                  setImgUrl,
-                  MeterInput,
-                });
+              ? Toast.show({
+                  type: 'error',
+                  text1: '!  Alert',
+                  text2: 'Take a photo and try again',
+                  autoHide: true,
+                  position: 'top',
+                  topOffset: 0,
+                })
+              : handelsubmit();
           }}
           style={styles.galleryButton}>
           <Text style={{color: '#f7a602', fontWeight: 'bold', fontSize: 20}}>

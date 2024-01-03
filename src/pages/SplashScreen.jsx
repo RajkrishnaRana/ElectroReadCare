@@ -17,7 +17,7 @@ export default function SplashScreen() {
       });
     }, 2000);
 
-    //return () => {};
+    // return () => {};
   }, []);
 
   return (
