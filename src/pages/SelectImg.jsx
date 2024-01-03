@@ -15,9 +15,10 @@ const SelectImg = ({navigation, route}) => {
   const [imgUrl, setImgUrl] = useState('');
 
   const openCamera = async () => {
-    const result = await launchCamera();
+    const options = {quality: 0.5, base64: true, doNotSave: true};
+    const result = await launchCamera(options);
     setImgUrl(result?.assets[0]?.uri);
-    console.log('Result ========>', result);
+    console.log('Result ========>', result.base64);
   };
 
   const handelsubmit = () => {
