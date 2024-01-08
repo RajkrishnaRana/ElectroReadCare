@@ -1,28 +1,35 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React, {useState} from 'react';
 import {launchCamera} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 
 const SelectImg = ({navigation, route}) => {
   const {value, MeterInput} = route.params;
+  const [base64Data, setBase64Data] = useState('');
   const [imgUrl, setImgUrl] = useState('');
 
   const openCamera = async () => {
-    const result = await launchCamera();
-    setImgUrl(result?.assets[0]?.uri);
-    console.log('Result ========>', result);
+    const options = {
+      mediaType: 'photo',
+      includeBase64: true, // Set this to true to include the base64 data
+    };
+
+    launchCamera(options, result => {
+      if (result?.assets && result.assets.length > 0) {
+        setBase64Data(result.assets[0].base64);
+        setImgUrl(result.assets[0]?.uri);
+      }
+    });
   };
 
-  const handelsubmit = () => {
-    navigation.navigate('Result', {value, imgUrl, setImgUrl, MeterInput});
-    // setImgUrl('');
+  const handleSubmit = () => {
+    navigation.navigate('Result', {
+      value,
+      base64Data,
+      MeterInput,
+      imgUrl,
+      setImgUrl,
+    });
   };
 
   return (
@@ -55,16 +62,18 @@ const SelectImg = ({navigation, route}) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            imgUrl.length === 0
-              ? Toast.show({
-                  type: 'error',
-                  text1: '!  Alert',
-                  text2: 'Take a photo and try again',
-                  autoHide: true,
-                  position: 'top',
-                  topOffset: 0,
-                })
-              : handelsubmit();
+            if (base64Data.length === 0) {
+              Toast.show({
+                type: 'error',
+                text1: '!  Alert',
+                text2: 'Take a photo and try again',
+                autoHide: true,
+                position: 'top',
+                topOffset: 0,
+              });
+            } else {
+              handleSubmit();
+            }
           }}
           style={styles.galleryButton}>
           <Text style={{color: '#f7a602', fontWeight: 'bold', fontSize: 20}}>
