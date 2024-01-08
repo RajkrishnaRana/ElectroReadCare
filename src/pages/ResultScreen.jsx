@@ -6,19 +6,65 @@ import {StackActions, useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import NetInfo from '@react-native-community/netinfo';
+import {openDatabase} from 'react-native-sqlite-storage';
+
+const db = openDatabase({name: 'UserDatabase2.db'});
 
 const ResultScreen = ({route}) => {
-  var count = 1;
   const navigation = useNavigation();
   const {value, imgUrl, MeterInput, setImgUrl} = route.params;
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    //Initialize the Sql table for storing the data
+    db.transaction(txn => {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='meter_reading_data'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length == 0) {
+            txn.executeSql('DROP TABLE IF EXISTS meter_reading_data', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS meter_reading_data(user_id INTEGER PRIMARY KEY AUTOINCREMENT, time VARCHAR(255), imgUrl VARCHAR(20000), MeterNumber VARCHAR(20), MeterReading VARCHAR(10))',
+              [],
+            );
+          } else {
+            console.log('Already created table');
+          }
+        },
+      );
+    });
+  }, []);
+
+  useEffect(() => {
     //AsyncStorage.clear();
-    setImgUrl('');
     setImgUrl('');
     findValue();
   }, []);
+
+  //Save data to the SQL Lite storage
+  const saveData = () => {
+    const times = new Date();
+    const time = times.toLocaleString();
+    db.transaction(txn => {
+      txn.executeSql(
+        'INSERT INTO meter_reading_data(time, MeterNumber, imgUrl, MeterReading) VALUES (?,?,?,?)',
+        [time, value, imgUrl, MeterInput],
+        (tex, res) => {
+          if (res.rowsAffected == 1) {
+            navigation.navigate('SqlStorage');
+            console.log(res);
+          } else {
+            console.log('some err happened');
+          }
+        },
+        err => {
+          console.log(err);
+        },
+      );
+    });
+  };
 
   const findValue = async () => {
     //Getting Data from async storage
@@ -29,7 +75,6 @@ const ResultScreen = ({route}) => {
   // When ONLINE ###########
   const handleClickOnline = async () => {
     // UPLOAD TO FIREBASE
-    count = count + 1;
     const times = new Date();
     const readingValue = {
       id: auth().currentUser.uid,
@@ -69,7 +114,8 @@ const ResultScreen = ({route}) => {
       if (connectionInfo.isConnected) {
         handleClickOnline();
       } else {
-        handleClickOffline();
+        //handleClickOffline();
+        saveData();
       }
     });
   };
@@ -105,8 +151,9 @@ const ResultScreen = ({route}) => {
           btnLabel="Confirm"
           customWidth={350}
           press={() => {
-            offlineOrOnline();
-            navigation.dispatch(StackActions.replace('Home'));
+            //offlineOrOnline();
+            saveData();
+            //navigation.dispatch(StackActions.replace('Home'));
           }}
         />
       </View>
