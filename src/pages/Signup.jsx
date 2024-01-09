@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
 // import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
@@ -22,10 +23,11 @@ const Signup = props => {
   const [message, setMessage] = useState('');
   const [showpass, setShowpass] = useState(true);
   const [showconpass, setShowconpass] = useState(true);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
   const validateEmail = email => {
     if (!email.includes('@')) {
-      Alert.alert('Please Provide a valid email');
       return false;
     } else {
       return true;
@@ -34,34 +36,9 @@ const Signup = props => {
 
   const validatePass = (password, confirmPassword) => {
     if (password !== confirmPassword) {
-      Alert.alert('Please give same password');
       return false;
     } else if (password === confirmPassword) {
       return true;
-    }
-  };
-
-  // SignUp Function
-  const handleSignup = async () => {
-    const isEmailValid = validateEmail(email);
-    const isPassValid = validatePass(password, confirmPassword);
-
-    if (isEmailValid && isPassValid) {
-      try {
-        const isUserCreated = await auth().createUserWithEmailAndPassword(
-          email,
-          password,
-        );
-
-        await auth().currentUser.sendEmailVerification();
-        await auth().signOut();
-        Alert.alert('Please Check Your Email and Verify');
-        // console.log(isUserCreated);
-        navigation.navigate('Login');
-      } catch (err) {
-        console.log(err);
-        setMessage(err.message);
-      }
     }
   };
 
@@ -72,9 +49,96 @@ const Signup = props => {
     setShowconpass(prev => !prev);
   };
 
+  //Signup conditation check
+  const signuphandel = async () => {
+    const isEmailValid = validateEmail(email);
+    const isPassValid = validatePass(password, confirmPassword);
+    //Email check
+    if (password === '' && confirmPassword === '' && email === '') {
+      Toast.show({
+        type: 'error',
+        text1: '!  Alert',
+        text2: 'Please enter all details',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    } else if (!isEmailValid) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Enter valied email id',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    }
+    //Password check
+    else if (password.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Please enter 6 character then try again ',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    } else if (password !== confirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'Password are not same',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    }
+
+    //Firebase Enter
+    //When Password are same then Enter Firebase
+    else if (isEmailValid && isPassValid) {
+      try {
+        const isUserCreated = await auth().createUserWithEmailAndPassword(
+          email,
+          password,
+        );
+
+        const userData = {
+          id: response.user.uid,
+          name: name,
+          email: email,
+          phone: phone,
+        };
+
+        await firestore()
+          .collection('users')
+          .doc(response.user.uid)
+          .set(userData);
+
+        await auth().currentUser.sendEmailVerification();
+        await auth().signOut();
+        console.log(isUserCreated);
+        Toast.show({
+          type: 'success',
+          text1: 'Successfull',
+          text2: 'Please Check Your Email and Verify',
+          autoHide: true,
+          position: 'top',
+          topOffset: 0,
+        });
+
+        //erease all data
+      } catch (err) {
+        console.log(err);
+        setMessage(err.message);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={{marginBottom: 30, alignSelf: 'center'}}>
+      <Toast ref={ref => Toast.setRef(ref)} />
+      <View style={{marginBottom: 10, alignSelf: 'center'}}>
         <Image
           style={styles.imgContainer}
           source={require('../assets/Electro-Service-Logo-N.webp')}
@@ -93,15 +157,53 @@ const Signup = props => {
       </View>
       <View style={styles.InputContainer}>
         <View style={{marginBottom: 10}}>
+          {/* Name of the User */}
           <View style={styles.InputContainer}>
             <View style={{marginBottom: 10}}>
-              <Text style={styles.h2Text}>Email</Text>
+              {/* <Text style={styles.h2Text}>Name</Text> */}
+              <View style={styles.sectionStyle}>
+                <Image
+                  style={{height: 20, width: 20, marginLeft: 10}}
+                  source={require(`../assets/user.png`)}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Your Name"
+                  value={name}
+                  onChangeText={value => setName(value)}
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Phone Number */}
+          <View style={styles.InputContainer}>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Phone Number</Text> */}
+              <View style={styles.sectionStyle}>
+                <Image
+                  style={{height: 20, width: 20, marginLeft: 10}}
+                  source={require('../assets/phone.png')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Your Mobile No."
+                  value={phone}
+                  onChangeText={value => setPhone(value)}
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Email */}
+          <View style={styles.InputContainer}>
+            <View style={{marginBottom: 10}}>
+              {/* <Text style={styles.h2Text}>Email</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
                   source={require(`../assets/mail-inbox.png`)}
                 />
-                {/* Email */}
                 <TextInput
                   style={styles.input}
                   placeholder="Enter Your Email"
@@ -112,16 +214,15 @@ const Signup = props => {
             </View>
           </View>
 
+          {/* Password */}
           <View style={styles.InputContainer}>
             <View style={{marginBottom: 10}}>
-              <Text style={styles.h2Text}>Password</Text>
+              {/* <Text style={styles.h2Text}>Password</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
                   source={require(`../assets/reset-password.png`)}
                 />
-
-                {/* Password */}
                 <TextInput
                   style={styles.input}
                   placeholder="Enter Your Password Again"
@@ -161,7 +262,7 @@ const Signup = props => {
 
           <View style={styles.InputContainer}>
             <View style={{marginBottom: 10}}>
-              <Text style={styles.h2Text}>Confirm Password</Text>
+              {/* <Text style={styles.h2Text}>Confirm Password</Text> */}
               <View style={styles.sectionStyle}>
                 <Image
                   style={{height: 20, width: 20, marginLeft: 10}}
@@ -213,13 +314,9 @@ const Signup = props => {
             bgColor="#030303"
             textColor="#FFF"
             btnLabel="Sign Up"
-            press={() => {
-              // SignUp Function
-              password.length >= 6
-                ? handleSignup()
-                : Alert.alert('Password Must be at least 6 char');
-            }}
+            press={signuphandel}
           />
+
           <View style={{flexDirection: 'row', marginTop: 10}}>
             <Text style={{fontSize: 17}}>Existing User ? </Text>
             <TouchableOpacity
@@ -239,6 +336,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    paddingTop: 25,
   },
   input: {
     width: '80%',
@@ -276,7 +374,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     alignItems: 'center',
-    marginTop: 10,
+    // pBottom: 10,
   },
   footerText: {
     fontWeight: 'bold',

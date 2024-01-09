@@ -17,15 +17,15 @@ export default function SplashScreen() {
       });
     }, 2000);
 
-    return () => {};
+    // return () => {};
   }, []);
 
   return (
     <View style={styles.container}>
       <LottieView
         style={{
-          height: 400,
-          width: 400,
+          height: 600,
+          width: 600,
         }}
         source={require('../assets/Splash-bolt.json')}
         autoPlay
@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: '30%',
   },
 });

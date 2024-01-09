@@ -13,19 +13,28 @@ import ResultScreen from '../pages/ResultScreen';
 import HistoryScreen from '../pages/HistoryScreen';
 import OfflinePages from '../pages/OfflinePages';
 import SplashScreen from '../pages/SplashScreen';
+import DetailsPage from '../pages/DetailsPage';
+import SqlLite from '../pages/SqlLite';
+import TempEmail from '../pages/TempEmail';
+import SqlLiteStorage from '../pages/SqlLiteStorage';
 
 const Stack = createNativeStackNavigator();
 const StackNav = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="TempEmail" component={TempEmail} />
+      <Stack.Screen name="SqlLite" component={SqlLite} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Result" component={ResultScreen} />
       <Stack.Screen name="SelectImg" component={SelectImg} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="History" component={HistoryScreen} />
+
       <Stack.Screen name="offline" component={OfflinePages} />
+      <Stack.Screen name="SqlStorage" component={SqlLiteStorage} />
+      <Stack.Screen name="Details" component={DetailsPage} />
     </Stack.Navigator>
   );
 };
@@ -48,4 +57,5 @@ export default MainNavigator;
 //       <Drawer.Screen name="History" component={HistoryScreen} />
 //     </Drawer.Navigator>
 //   );
+
 // };

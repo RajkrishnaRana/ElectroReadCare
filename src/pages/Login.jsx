@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
 // import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
@@ -32,18 +33,50 @@ export default function Login(props) {
         console.log(user);
         // replacing LoginScreen navigator postion with Home. So back btn won't take you to login screen again after Sign in.
         if (user.user.emailVerified) {
-          Alert.alert('You are Verified');
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'You are successfully Login',
+            autoHide: true,
+            position: 'top',
+            topOffset: 0,
+          });
           navigation.dispatch(StackActions.replace('Home'));
         } else {
-          Alert.alert('Please Verify Your Email Checkout Inbox');
+          // Alert.alert('Please Verify Your Email Checkout Inbox');
+          Toast.show({
+            type: 'error',
+            text1: ' Failed !',
+            text2: 'Please Verify Your Email Checkout Inbox',
+            autoHide: true,
+            position: 'top',
+            topOffset: 0,
+          });
           await auth().currentUser.sendEmailVerification();
           await auth().signOut();
         }
       } else {
-        Alert.alert('Please Enter All Details');
+        // Alert.alert('Please Enter All Details');
+        Toast.show({
+          type: 'error',
+          text1: '!  Alert',
+          text2: 'Please enter all details',
+          position: 'top',
+          topOffset: 0,
+          autoHide: true,
+          fontSize: 20,
+        });
       }
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'invalied',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
 
       setMessage(err.message);
     }
@@ -55,11 +88,13 @@ export default function Login(props) {
 
   return (
     <View style={styles.container}>
+      <Toast ref={ref => Toast.setRef(ref)} />
       <View style={{alignItems: 'center', marginBottom: 30}}>
         <Image
           style={styles.imgContainer}
           source={require('../assets/Electro-Service-Logo-N.webp')}
         />
+
         <View style={styles.logoText}>
           <Text style={{fontWeight: 'bold', fontSize: 17, color: '#d65231'}}>
             Electro{' '}
@@ -140,7 +175,7 @@ export default function Login(props) {
       </View>
 
       {/* Error Message Below  */}
-      <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text>
+      {/* <Text style={{alignSelf: 'center', fontWeight: '700'}}>{message}</Text> */}
 
       <View style={styles.btnContainer}>
         {/* Login Btn */}
@@ -189,7 +224,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 70,
+    marginTop: 20,
     justifyContent: 'center',
   },
   InputContainer: {
@@ -200,17 +235,17 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     marginVertical: 10,
-    marginBottom: 20,
+    marginBottom: 50,
     color: '#0d0d0c',
   },
   h2Text: {
     fontSize: 17,
     fontWeight: 'bold',
     color: '#0d0d0c',
-    marginBottom: 10,
+    marginBottom: 0,
   },
   btnContainer: {
-    marginTop: 70,
+    marginTop: 50,
     alignItems: 'center',
   },
   footerText: {

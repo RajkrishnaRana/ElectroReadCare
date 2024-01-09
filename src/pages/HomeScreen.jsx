@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import {Dropdown} from 'react-native-element-dropdown';
 import Btn from '../components/Btn';
 import Auth from '@react-native-firebase/auth';
@@ -43,6 +44,7 @@ const HomeScreen = props => {
           style={styles.imgContainer}
           source={require('../assets/Electro-Service-Logo-N.webp')}
         />
+        <Toast ref={ref => Toast.setRef(ref)} />
         <View style={styles.logoText}>
           <Text style={{fontWeight: 'bold', fontSize: 20, color: '#d65231'}}>
             Select Your Meter &
@@ -94,7 +96,15 @@ const HomeScreen = props => {
           onPress={() => {
             MeterInput.length === 6
               ? props.navigation.navigate('SelectImg', {value, MeterInput})
-              : Alert.alert('Please Enter a valid Meter Input of 6 digit');
+              : //  Alert.alert('Please Enter a valid Meter Input of 6 digit');
+                Toast.show({
+                  type: 'error',
+                  text1: '!  Alert',
+                  text2: 'Please Enter a valid Meter Input of 6 digit',
+                  autoHide: true,
+                  position: 'top',
+                  topOffset: 0,
+                });
           }}>
           <Text
             style={{
