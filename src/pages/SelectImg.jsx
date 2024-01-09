@@ -2,24 +2,59 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React, {useState} from 'react';
 import {launchCamera} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
+import ImageResizer from 'react-native-image-resizer'; // Import the library
 
 const SelectImg = ({navigation, route}) => {
   const {value, MeterInput} = route.params;
   const [base64Data, setBase64Data] = useState('');
   const [imgUrl, setImgUrl] = useState('');
 
+  const imageToBase64 = async uri => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result.split(',')[1]);
+      };
+      reader.readAsDataURL(blob);
+    });
+  };
+
   const openCamera = async () => {
     const options = {
       mediaType: 'photo',
-      includeBase64: true, // Set this to true to include the base64 data
+      includeBase64: true,
     };
 
-    launchCamera(options, result => {
+    launchCamera(options, async result => {
       if (result?.assets && result.assets.length > 0) {
-        setBase64Data(result.assets[0].base64);
+        // Resize the image before setting the base64 data
+        const resizedImage = await resizeImage(result.assets[0].uri);
+        console.log(result.assets[0].base64.length);
+        const base64new = await imageToBase64(resizedImage.uri);
+        console.log(base64new.length);
+        setBase64Data(base64new);
         setImgUrl(result.assets[0]?.uri);
       }
     });
+  };
+
+  const resizeImage = async uri => {
+    try {
+      const resizedImage = await ImageResizer.createResizedImage(
+        uri,
+        400,
+        400,
+        'JPEG',
+        80,
+      );
+      return {uri: resizedImage.uri};
+    } catch (error) {
+      console.error('Error resizing image:', error);
+      return {uri, base64: ''};
+    }
   };
 
   const handleSubmit = () => {
