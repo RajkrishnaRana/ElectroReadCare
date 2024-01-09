@@ -12,7 +12,7 @@ const db = openDatabase({name: 'UserDatabase2.db'});
 
 const ResultScreen = ({route}) => {
   const navigation = useNavigation();
-  const {value, imgUrl, MeterInput, setImgUrl} = route.params;
+  const {value, base64Data, imgUrl, setImgUrl, MeterInput} = route.params;
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const ResultScreen = ({route}) => {
       time: times.toLocaleString(),
       date: Date.now(),
       MeterNumber: value,
-      imageUrl: imgUrl,
+      base64Data: base64Data,
       MeterReading: MeterInput,
     };
     await firestore().collection('MeterData').doc().set(readingValue);
