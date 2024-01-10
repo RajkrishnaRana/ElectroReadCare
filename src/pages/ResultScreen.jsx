@@ -28,7 +28,6 @@ const ResultScreen = ({route}) => {
   // When ONLINE ###########
   const handleClickOnline = async () => {
     // UPLOAD TO FIREBASE
-    count = count + 1;
     const times = new Date();
     const readingValue = {
       id: auth().currentUser.uid,

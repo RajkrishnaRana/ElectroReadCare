@@ -97,7 +97,7 @@ const SelectImg = ({navigation, route}) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            if (base64Data.length === 0) {
+            if (imgUrl.length === 0) {
               Toast.show({
                 type: 'error',
                 text1: '!  Alert',
@@ -170,10 +170,10 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   outContainer: {
-    height: 800,
-    width: 385,
+    height: '90%',
+    width: '95%',
     backgroundColor: '#f7ae02',
-    marginTop: 50,
+    marginTop: '12%',
     borderRadius: 40,
     alignItems: 'center',
   },

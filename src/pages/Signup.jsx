@@ -5,16 +5,15 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Alert,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
-// import FieldInput from '../components/FieldInput';
 import Btn from '../components/Btn';
+import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
 
-const Signup = props => {
+const Signup = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
@@ -54,20 +53,38 @@ const Signup = props => {
     const isEmailValid = validateEmail(email);
     const isPassValid = validatePass(password, confirmPassword);
     //Email check
-    if (password === '' && confirmPassword === '' && email === '') {
+    if (
+      password === '' &&
+      confirmPassword === '' &&
+      email === '' &&
+      phone === ''
+    ) {
       Toast.show({
         type: 'error',
-        text1: '!  Alert',
+        text1: 'Error !',
         text2: 'Please enter all details',
         autoHide: true,
         position: 'top',
         topOffset: 0,
       });
-    } else if (!isEmailValid) {
+    }
+    //Phone No. check
+    else if (phone.length !== 10) {
       Toast.show({
         type: 'error',
-        text1: '!  Failed',
-        text2: 'Enter valied email id',
+        text1: 'Error !',
+        text2: 'please enter a 10 digit Mobile No. ',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    }
+    // Email check
+    else if (!isEmailValid) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error !',
+        text2: 'please enter a valid email',
         autoHide: true,
         position: 'top',
         topOffset: 0,
@@ -77,8 +94,8 @@ const Signup = props => {
     else if (password.length < 6) {
       Toast.show({
         type: 'error',
-        text1: '!  Failed',
-        text2: 'Please enter 6 character then try again ',
+        text1: 'Error !',
+        text2: 'password is too short',
         autoHide: true,
         position: 'top',
         topOffset: 0,
@@ -86,8 +103,8 @@ const Signup = props => {
     } else if (password !== confirmPassword) {
       Toast.show({
         type: 'error',
-        text1: '!  Failed',
-        text2: 'Password are not same',
+        text1: 'Error !',
+        text2: 'password is incorrect',
         autoHide: true,
         position: 'top',
         topOffset: 0,
@@ -104,7 +121,7 @@ const Signup = props => {
         );
 
         const userData = {
-          id: response.user.uid,
+          id: isUserCreated.user.uid,
           name: name,
           email: email,
           phone: phone,
@@ -112,7 +129,7 @@ const Signup = props => {
 
         await firestore()
           .collection('users')
-          .doc(response.user.uid)
+          .doc(isUserCreated.user.uid)
           .set(userData);
 
         await auth().currentUser.sendEmailVerification();
@@ -120,12 +137,13 @@ const Signup = props => {
         console.log(isUserCreated);
         Toast.show({
           type: 'success',
-          text1: 'Successfull',
+          text1: 'Successful',
           text2: 'Please Check Your Email and Verify',
           autoHide: true,
           position: 'top',
           topOffset: 0,
         });
+        navigation.navigate('Login');
 
         //erease all data
       } catch (err) {
@@ -321,7 +339,7 @@ const Signup = props => {
             <Text style={{fontSize: 17}}>Existing User ? </Text>
             <TouchableOpacity
               onPress={() => {
-                props.navigation.navigate('Login');
+                navigation.navigate('Login');
               }}>
               <Text style={{fontSize: 17, fontWeight: 'bold'}}>Login</Text>
             </TouchableOpacity>
