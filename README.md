@@ -1,6 +1,6 @@
 <!-- Hey Bro -->
 
-# ElectroReadCare Helps to Read Electric Meter
+# ElectroReadCare App Helps to Read Electric Meter
 
 # This is Rajkrishna's Branch
 
