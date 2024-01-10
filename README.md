@@ -1,12 +1,10 @@
-<!-- Hey Bro -->
-
 # ElectroReadCare Helps to Read Electric Meter
 
 # This is Rajkrishna's Branch
 
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+This is our project ElectroReadCare for taking Electric Meter Reading.
 
-# Getting Started
+# TECH Stack used in this project - <ul>React Native, Async Storage, Firebase, SQL Lite, Lottie Animation. </ul>
 
 > **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
