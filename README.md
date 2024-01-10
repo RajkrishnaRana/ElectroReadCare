@@ -9,6 +9,9 @@ This is our project ElectroReadCare for taking Electric Meter Reading.
 
 > **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
+# Appllication Link : https://drive.google.com/file/d/1R7fbNrnlfTyobGlgqLBWAXckUQHsErnY/view?usp=drive_link
+
+# Steps to Run the Application
 ## Step 1: Start the Metro Server
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
