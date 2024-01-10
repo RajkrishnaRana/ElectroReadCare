@@ -50,7 +50,7 @@ const OfflinePages = ({}) => {
     netInfo.then(connectionInfo => {
       if (connectionInfo.isConnected) {
         data.map(async item => {
-          console.log(item);
+          //console.log(item);
           await firestore().collection('MeterData').doc().set(item);
         });
         AsyncStorage.clear();
@@ -87,7 +87,7 @@ const OfflinePages = ({}) => {
                 TimeStamp: {item.time}
               </Text>
               <Text style={{fontWeight: 'bold', fontSize: 15}}>
-                Meter Number : {item.value}
+                Meter Number : {item.MeterNumber}
               </Text>
               <Text style={{fontWeight: 'bold', fontSize: 15}}>
                 Meter Value: {item.MeterReading}
@@ -97,7 +97,9 @@ const OfflinePages = ({}) => {
               <Image
                 resizeMode="contain"
                 style={styles.img}
-                source={{uri: item.imageUrl}}
+                source={{
+                  uri: `data:image/jpeg;base64,${item.base64Data}`,
+                }}
               />
             </View>
           </View>
