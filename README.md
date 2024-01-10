@@ -4,7 +4,11 @@
 
 This is our project ElectroReadCare for taking Electric Meter Reading.
 
-# TECH Stack used in this project - <ul>React Native, Async Storage, Firebase, SQL Lite, Lottie Animation. </ul>
+# TECH Stack used in this project - <ul style="list-style-type:disc">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul><ul >React Native, Async Storage, Firebase, SQL Lite, Lottie Animation. </ul>
 
 > **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
