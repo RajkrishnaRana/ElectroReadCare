@@ -1,13 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View, Image} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  RefreshControl,
+} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
 const HistoryScreen = () => {
   const [myData, setMyData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     getDatabase();
-  }, []);
+  }, [refreshing]);
 
   const getDatabase = async () => {
     try {
@@ -22,8 +30,19 @@ const HistoryScreen = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+    <ScrollView
+      contentContainerStyle={styles.scrollViewContent}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }>
       <Text style={styles.heading}>History</Text>
       {myData.length > 0 ? (
         myData.map(dataItem => (
@@ -64,6 +83,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     paddingVertical: 20,
+    margin: 10,
   },
   heading: {
     fontSize: 30,

@@ -13,8 +13,9 @@ import React, {useState} from 'react';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
-const Signup = props => {
+const Signup = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
@@ -54,7 +55,12 @@ const Signup = props => {
     const isEmailValid = validateEmail(email);
     const isPassValid = validatePass(password, confirmPassword);
     //Email check
-    if (password === '' && confirmPassword === '' && email === '') {
+    if (
+      password === '' &&
+      confirmPassword === '' &&
+      email === '' &&
+      phone === ''
+    ) {
       Toast.show({
         type: 'error',
         text1: '!  Alert',
@@ -67,7 +73,7 @@ const Signup = props => {
       Toast.show({
         type: 'error',
         text1: '!  Failed',
-        text2: 'Enter valied email id',
+        text2: 'Enter a valid email id',
         autoHide: true,
         position: 'top',
         topOffset: 0,
@@ -78,7 +84,7 @@ const Signup = props => {
       Toast.show({
         type: 'error',
         text1: '!  Failed',
-        text2: 'Please enter 6 character then try again ',
+        text2: 'Please enter minimum 6 character password then try again ',
         autoHide: true,
         position: 'top',
         topOffset: 0,
@@ -88,6 +94,15 @@ const Signup = props => {
         type: 'error',
         text1: '!  Failed',
         text2: 'Password are not same',
+        autoHide: true,
+        position: 'top',
+        topOffset: 0,
+      });
+    } else if (phone.length !== 10) {
+      Toast.show({
+        type: 'error',
+        text1: '!  Failed',
+        text2: 'please provide a correct phone number',
         autoHide: true,
         position: 'top',
         topOffset: 0,
@@ -104,7 +119,7 @@ const Signup = props => {
         );
 
         const userData = {
-          id: response.user.uid,
+          id: isUserCreated.user.uid,
           name: name,
           email: email,
           phone: phone,
@@ -112,7 +127,7 @@ const Signup = props => {
 
         await firestore()
           .collection('users')
-          .doc(response.user.uid)
+          .doc(isUserCreated.user.uid)
           .set(userData);
 
         await auth().currentUser.sendEmailVerification();
@@ -126,6 +141,7 @@ const Signup = props => {
           position: 'top',
           topOffset: 0,
         });
+        navigation.navigate('Login');
 
         //erease all data
       } catch (err) {
@@ -321,7 +337,7 @@ const Signup = props => {
             <Text style={{fontSize: 17}}>Existing User ? </Text>
             <TouchableOpacity
               onPress={() => {
-                props.navigation.navigate('Login');
+                navigation.navigate('Login');
               }}>
               <Text style={{fontSize: 17, fontWeight: 'bold'}}>Login</Text>
             </TouchableOpacity>

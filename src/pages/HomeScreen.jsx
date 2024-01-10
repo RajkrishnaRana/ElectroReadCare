@@ -94,17 +94,27 @@ const HomeScreen = props => {
             borderColor: 'yellow',
           }}
           onPress={() => {
-            MeterInput.length === 6
-              ? props.navigation.navigate('SelectImg', {value, MeterInput})
-              : //  Alert.alert('Please Enter a valid Meter Input of 6 digit');
-                Toast.show({
-                  type: 'error',
-                  text1: '!  Alert',
-                  text2: 'Please Enter a valid Meter Input of 6 digit',
-                  autoHide: true,
-                  position: 'top',
-                  topOffset: 0,
-                });
+            if (MeterInput.length === 6 && value !== null) {
+              props.navigation.navigate('SelectImg', {value, MeterInput});
+            } else if (MeterInput.length !== 6) {
+              Toast.show({
+                type: 'error',
+                text1: '!  Alert',
+                text2: 'Please Enter a valid Meter Input of 6 digit',
+                autoHide: true,
+                position: 'bottom',
+                topOffset: 0,
+              });
+            } else if (value === null) {
+              Toast.show({
+                type: 'error',
+                text1: '!  Alert',
+                text2: 'Please select a Meter',
+                autoHide: true,
+                position: 'bottom',
+                topOffset: 0,
+              });
+            }
           }}>
           <Text
             style={{

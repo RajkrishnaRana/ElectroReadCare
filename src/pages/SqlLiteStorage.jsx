@@ -5,10 +5,13 @@ import {
   StyleSheet,
   RefreshControl,
   Image,
+  Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {openDatabase} from 'react-native-sqlite-storage';
 import Btn from '../components/Btn';
+import firestore from '@react-native-firebase/firestore';
+import NetInfo from '@react-native-community/netinfo';
 
 let db = openDatabase({name: 'UserDatabase2.db'});
 
@@ -16,21 +19,80 @@ const SqlLiteStorage = ({navigation}) => {
   let dataList = [];
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [conncetionStatus, setConnectionStatus] = useState(false);
+
+  const handleNetworkChange = state => {
+    setConnectionStatus(state.isConnected);
+  };
 
   useEffect(() => {
     getData();
   }, [refreshing]);
 
+  useEffect(() => {
+    NetInfo.addEventListener(handleNetworkChange);
+  }, []);
+
   const getData = () => {
     db.transaction(txn => {
       txn.executeSql('SELECT * FROM meter_reading_data', [], (tex, res) => {
         for (let i = 0; i < res.rows.length; ++i) {
-          console.log(res.rows.item(i));
           dataList.push(res.rows.item(i));
         }
         setData(dataList);
       });
     });
+  };
+
+  const upload = () => {
+    db.transaction(txn => {
+      txn.executeSql(
+        'SELECT * FROM meter_reading_data',
+        [],
+        async (tex, res) => {
+          for (let i = 0; i < res.rows.length; ++i) {
+            const readingValue = {
+              time: res.rows.item(i).time,
+              MeterNumber: res.rows.item(i).MeterNumber,
+              MeterReading: res.rows.item(i).MeterReading,
+              base64Data: res.rows.item(i).imgUrl,
+            };
+            await firestore().collection('MeterData').doc().set(readingValue);
+            console.log(readingValue);
+          }
+        },
+      );
+    });
+    deleteFromData();
+    Alert.alert('You have successfully uploaded the data');
+    navigation.navigate('Home');
+  };
+
+  const deleteFromData = () => {
+    db.transaction(txn => {
+      txn.executeSql(
+        'SELECT * FROM meter_reading_data',
+        [],
+        async (tex, res) => {
+          for (let i = 0; i < res.rows.length; ++i) {
+            txn.executeSql(
+              `DELETE FROM meter_reading_data WHERE time = '${
+                res.rows.item(i).time
+              }'`,
+            );
+          }
+        },
+      );
+    });
+    onRefresh();
+  };
+
+  const offlineOrOnline = () => {
+    if (conncetionStatus) {
+      upload();
+    } else {
+      Alert.alert('You are offline');
+    }
   };
 
   const onRefresh = () => {
@@ -74,7 +136,7 @@ const SqlLiteStorage = ({navigation}) => {
                 <Image
                   resizeMode="contain"
                   style={styles.img}
-                  source={{uri: item.imgUrl}}
+                  source={{uri: `data:image/jpeg;base64,${item.imgUrl}`}}
                 />
               </View>
             </View>
@@ -88,7 +150,7 @@ const SqlLiteStorage = ({navigation}) => {
           btnLabel="Upload"
           customWidth={350}
           press={() => {
-            upload();
+            offlineOrOnline();
           }}
         />
       </View>

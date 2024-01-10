@@ -72,7 +72,7 @@ export default function Login(props) {
       Toast.show({
         type: 'error',
         text1: '!  Failed',
-        text2: 'invalied',
+        text2: 'Please give right details',
         autoHide: true,
         position: 'top',
         topOffset: 0,
