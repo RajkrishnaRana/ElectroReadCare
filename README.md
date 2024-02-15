@@ -47,9 +47,3 @@ We welcome contributions to ElectroReadCare! To get involved:
 4. Commit your changes (git commit -m 'Add awesome feature').
 5. Push to the branch (git push origin feature/awesome-feature).
 6. Open a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE). 
-
-Feel free to explore ElectroReadCare, contribute, and make it even better! If you encounter any issues or have suggestions, please create an issue or pull request. Let's work together to improve the efficiency of managing electricity meter readings!
